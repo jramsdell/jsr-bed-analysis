@@ -30,53 +30,25 @@ class Interval(var location: String, var start: Int, var stop: Int, var coverage
 var mycount = 0
 
 
-class GraphParser(val filename: String, val interval: Int) {
-    val intervals: ArrayList<Interval> = ArrayList()
-    var lastInterval: Interval? = null
-
-    fun createIntervals(line: String) {
-        val curInterval = line.split("\t").run {
-            Interval(this[0], this[1].toInt(), this[2].toInt(), this[3].toDouble())
-        }
-
-        if (lastInterval == null) {
-            lastInterval = curInterval
-            return
-        }
-
-
-
-    }
-
-    fun parseFile(): Interval =
+fun parseFile(filename: String): Interval =
         File(filename).bufferedReader().lineSequence()
                 .drop(1)
                 .onEach { mycount += 1 }
                 .map { line ->
                     line.split("\t").run {
                         Interval(this[0], this[1].toInt(), this[2].toInt(), this[3].toDouble())
-                    }}
+                    }
+                }
                 .filter { interval -> interval.coverage > 2 }
                 .reduce(Interval::plus)
-}
+
 
 fun main(args: Array<String>) {
     val myArgs = arrayOf("--bedFile", "Sample_ZS1_human.bedGraph")
     val parser = ArgParser(myArgs)
     val p = MyParser(parser)
-    val gp = GraphParser(p.bedFile, p.interval.toInt())
-    val combined = gp.parseFile()
-
-    val counter = HashMap<Int, Int>()
-//    combined.intervals.forEach {
-//        val diff = ((it.stop - it.start)/50).toInt()
-//        counter[diff] = counter.getOrDefault(diff, 0) + 1
-//    }
-
-//    counter.entries.sortedByDescending { it.value }
-////            .take(20)
-//            .forEach { println("${it.key}: ${it.value}") }
-    val results = combined.intervals.groupBy { (it.stop - it.start) / 50 }
+    val intervals = parseFile(p.bedFile)
+    val results = intervals.intervals.groupBy { (it.stop - it.start) / 50 }
 
     println("Histogram of Fragment Size (bin size: 50)")
     results.entries
