@@ -2,6 +2,7 @@
 package unh
 
 import com.xenomachina.argparser.ArgParser
+import com.xenomachina.argparser.ShowHelpException
 import com.xenomachina.argparser.default
 import com.xenomachina.text.clear
 import java.io.File
@@ -115,6 +116,10 @@ fun runBedGraphParser(args: Array<String>) {
 }
 
 fun main(args: Array<String>) {
-    runBedGraphParser(args)
+    try {
+        runBedGraphParser(args)
+    } catch (e: ShowHelpException) {
+        e.printAndExit()
+    }
 }
 
