@@ -48,7 +48,7 @@ task execute(type: JavaExec) {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'unh.BedGraphParser'
+        attributes 'Main-Class': 'unh.MainKt'
     }
 }
 
