@@ -90,8 +90,9 @@ fun extractSequences(p: MyParser, fasta: HashMap<String, String>,
 
 
 fun main(args: Array<String>) {
-    val myArgs = arrayOf("--bedFile", "Sample_ZS1_human.bedGraph", "--interval", "50",
-            "--fasta", "hg38.fa")
+//    val myArgs = arrayOf("--bedFile", "Sample_ZS1_human.bedGraph", "--interval", "50",
+//            "--fasta", "hg38.fa")
+    val myArgs = args
     val parser = ArgParser(myArgs)
     val p = MyParser(parser)
     val intervals = parseFile(p.bedFile)
