@@ -82,7 +82,7 @@ fun extractSequences(p: MyParser, fasta: HashMap<String, String>,
                             .run { pattern.findAll(this).count() }
                 }.sum().toDouble() / count.size // Averages counts in the bin
 
-                binSize to pamAverage
+                binSize to pamAverage / binSize
             }
 
     pamCountsByBin.forEach { (k,v) ->
