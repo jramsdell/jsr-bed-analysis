@@ -53,7 +53,7 @@ fun readFasta(filename: String): HashMap<String, String> {
     var header = ""
     val builder = StringBuilder()
 
-    File(filename).readLines().forEach { line ->
+    File(filename).bufferedReader().forEachLine { line ->
         if (line.startsWith(">")) {
             if (header != "") {
                 fastaMap[header] = builder.toString()
@@ -65,6 +65,7 @@ fun readFasta(filename: String): HashMap<String, String> {
             builder.append(line.trimEnd())
         }
     }
+
     return fastaMap
 }
 
