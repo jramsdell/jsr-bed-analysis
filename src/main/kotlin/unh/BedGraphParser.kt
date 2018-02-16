@@ -93,7 +93,7 @@ fun extractSequences(p: MyParser, fasta: HashMap<String, String>,
 fun runBedGraphParser(args: Array<String>) {
 //    val myArgs = arrayOf("--bedFile", "Sample_ZS1_human.bedGraph", "--interval", "50",
 //            "--fasta", "hg38.fa")
-    val myArgs = arrayOf("--help")
+    val myArgs = args
     val parser = ArgParser(myArgs)
     val p = MyParser(parser)
     val intervals = parseFile(p.bedFile)
@@ -116,11 +116,6 @@ fun runBedGraphParser(args: Array<String>) {
 }
 
 fun main(args: Array<String>) {
-    try {
-        runBedGraphParser(args)
-    } catch (e: ShowHelpException) {
-        System.out.println("QWEQWE")
-        e.printAndExit()
-    }
+    runBedGraphParser(args)
 }
 
