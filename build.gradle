@@ -50,8 +50,6 @@ jar {
     manifest {
         attributes 'Main-Class': 'unh.MainKt'
     }
-    baseName = project.name + "-all"
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
 }
 
