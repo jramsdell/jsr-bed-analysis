@@ -50,5 +50,7 @@ jar {
     manifest {
         attributes 'Main-Class': 'unh.MainKt'
     }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
 
