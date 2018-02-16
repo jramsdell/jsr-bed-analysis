@@ -79,10 +79,12 @@ fun extractSequences(p: MyParser, fasta: HashMap<String, String>,
                 val pamAverage = count.map { interval ->
                     fasta[">" + interval.location]!!
                             .substring(interval.start, interval.stop)
-                            .run { pattern.findAll(this).count() }
+                            .run { pattern.findAll(this).count().toDouble() /
+                                    (interval.stop - interval.start)
+                            }
                 }.sum().toDouble() / count.size // Averages counts in the bin
 
-                binSize to pamAverage / ((binSize + 1) * 50)
+                binSize to pamAverage
             }
                     .sortedBy { it.first }
 
