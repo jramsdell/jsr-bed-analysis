@@ -82,8 +82,9 @@ fun extractSequences(p: MyParser, fasta: HashMap<String, String>,
                             .run { pattern.findAll(this).count() }
                 }.sum().toDouble() / count.size // Averages counts in the bin
 
-                binSize to pamAverage / binSize
+                binSize to pamAverage / ((binSize + 1) * 50)
             }
+                    .sortedBy { it.first }
 
     pamCountsByBin.forEach { (k,v) ->
         println("$k: $v")
