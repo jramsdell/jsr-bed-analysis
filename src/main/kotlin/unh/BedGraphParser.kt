@@ -56,7 +56,7 @@ fun readFasta(filename: String): HashMap<String, String> {
     File(filename).bufferedReader().forEachLine { line ->
         if (line.startsWith(">")) {
             if (header != "") {
-                fastaMap[header] = builder.toString()
+                fastaMap[header.trimEnd()] = builder.toString()
                 builder.clear()
             }
 
@@ -77,7 +77,7 @@ fun extractSequences(p: MyParser, fasta: HashMap<String, String>,
             results.map { (binSize,count) ->
                 // For each interval, extract corresponding sequence and count PAM Sites
                 val pamAverage = count.map { interval ->
-                    fasta[interval.location]!!
+                    fasta[">" + interval.location]!!
                             .substring(interval.start, interval.stop)
                             .run { pattern.findAll(this).count() }
                 }.sum().toDouble() / count.size // Averages counts in the bin
