@@ -46,3 +46,9 @@ task execute(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'unh.BedGraphParserKT'
+    }
+}
+
