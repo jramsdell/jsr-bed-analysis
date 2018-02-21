@@ -91,22 +91,22 @@ fun extractSequences(p: MyParser, fasta: HashMap<String, String>,
     pamCountsByBin.forEach(::println)
 }
 
-fun cutOutRanges(fasta: HashMap<String, String>, intervals: List<Interval>): Map<String, Int> {
+fun cutOutRanges(fasta: HashMap<String, String>, intervals: List<Interval>): Map<String, Double> {
     val pattern = "([ATCG]GG)".toRegex()
     return intervals.groupingBy(Interval::location)
             .fold(
-                    initialValue = Pair(0, 0),
-                    operation =  { (total, index), interval ->
+                    initialValue = Triple(0, 0, 0),
+                    operation =  { (total, size, index), interval ->
                         val fastaString = fasta[">" + interval.location]!!
                         try {
                             val subseq = fastaString.subSequence(index, interval.start)
                             val pamCounts = pattern.findAll(subseq).count()
-                            Pair(total + pamCounts, interval.stop)
+                            Triple(total + pamCounts, size + interval.run { start - stop }, interval.stop)
                         } catch (e: StringIndexOutOfBoundsException) {
-                            Pair(total, interval.stop)
+                            Triple(total, size, interval.stop)
                         }
                     })
-            .map { (key,pamPair) -> key to pamPair.first}
+            .map { (key,pamTriple) -> key to pamTriple.first.toDouble() / pamTriple.second.toDouble()}
             .toMap()
 }
 
