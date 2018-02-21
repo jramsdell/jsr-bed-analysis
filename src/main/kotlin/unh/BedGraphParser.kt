@@ -97,7 +97,7 @@ fun cutOutRanges(fasta: HashMap<String, String>, intervals: List<Interval>): Map
             .fold(
                     initialValue = Pair(0, 0),
                     operation =  { (total, index), interval ->
-                        val fastaString = fasta[interval.location]!!
+                        val fastaString = fasta[">" + interval.location]!!
                         val subseq = fastaString.subSequence(index, interval.start)
                         val pamCounts = pattern.findAll(subseq).count()
                         Pair(total + pamCounts, interval.stop)
