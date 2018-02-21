@@ -134,9 +134,9 @@ fun runBedGraphParser(args: Array<String>) {
 
     if (p.fasta != "") {
         val fasta = readFasta(p.fasta)
-//        extractSequences(p, fasta, results)
-        val res = cutOutRanges(fasta, intervals.intervals.apply { add(0, intervals)})
-        res.forEach(::println)
+        extractSequences(p, fasta, results)
+//        val res = cutOutRanges(fasta, intervals.intervals.apply { add(0, intervals)})
+//        res.forEach(::println)
     }
 }
 
