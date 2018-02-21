@@ -7,7 +7,7 @@ import com.xenomachina.argparser.default
 import com.xenomachina.text.clear
 import java.io.File
 import java.lang.Math.abs
-
+import java.lang.Math.max
 
 
 class MyParser(parser: ArgParser) {
@@ -100,8 +100,10 @@ fun cutOutRanges(fasta: HashMap<String, String>, intervals: List<Interval>): Map
                         val fastaString = fasta[">" + interval.location]!!
                         try {
                             val subseq = fastaString.subSequence(index, interval.start)
+                            var distance = max(interval.stop - interval.start, 0)
+
                             val pamCounts = pattern.findAll(subseq).count()
-                            Triple(total + pamCounts, size + interval.run { start - stop }, interval.stop)
+                            Triple(total + pamCounts, size + distance, interval.stop)
                         } catch (e: StringIndexOutOfBoundsException) {
                             Triple(total, size, interval.stop)
                         }
