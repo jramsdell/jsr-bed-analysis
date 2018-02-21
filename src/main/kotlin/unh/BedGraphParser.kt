@@ -88,9 +88,22 @@ fun extractSequences(p: MyParser, fasta: HashMap<String, String>,
             }
                     .sortedBy { it.first }
 
-    pamCountsByBin.forEach { (k,v) ->
-        println("$k: $v")
-    }
+    pamCountsByBin.forEach(::println)
+}
+
+fun cutOutRanges(fasta: HashMap<String, String>, intervals: List<Interval>): Map<String, Int> {
+    val pattern = "([ATCG]GG)".toRegex()
+    return intervals.groupingBy(Interval::location)
+            .fold(
+                    initialValue = Pair(0, 0),
+                    operation =  { (total, index), interval ->
+                        val fastaString = fasta[interval.location]!!
+                        val subseq = fastaString.subSequence(index, interval.start)
+                        val pamCounts = pattern.findAll(subseq).count()
+                        Pair(total + pamCounts, interval.stop)
+                    })
+            .map { (key,pamPair) -> key to pamPair.first}
+            .toMap()
 }
 
 
@@ -103,19 +116,21 @@ fun runBedGraphParser(args: Array<String>) {
     val intervals = parseFile(p.bedFile)
     val results = intervals.intervals.groupBy { (it.stop - it.start) / p.interval.toInt() }
 
-    println("Histogram of Fragment Size (bin size: ${p.interval.toInt()})")
-    results.entries
-            .sortedBy { it.key }
-            .forEach { (k,v) -> println("${k * p.interval.toInt()}: ${v.size}") }
-
-    println("\nAverage Coverage of Binned Fragments")
-    results .map { (k, v) -> k to v.sumByDouble { it.coverage / it.times } / v.size }
-            .sortedBy { it.first }
-            .forEach { (k, v) -> println("${k * p.interval.toInt()}: $v") }
+//    println("Histogram of Fragment Size (bin size: ${p.interval.toInt()})")
+//    results.entries
+//            .sortedBy { it.key }
+//            .forEach { (k,v) -> println("${k * p.interval.toInt()}: ${v.size}") }
+//
+//    println("\nAverage Coverage of Binned Fragments")
+//    results .map { (k, v) -> k to v.sumByDouble { it.coverage / it.times } / v.size }
+//            .sortedBy { it.first }
+//            .forEach { (k, v) -> println("${k * p.interval.toInt()}: $v") }
 
     if (p.fasta != "") {
         val fasta = readFasta(p.fasta)
-        extractSequences(p, fasta, results)
+//        extractSequences(p, fasta, results)
+        val res = cutOutRanges(fasta, intervals.intervals.apply { add(0, intervals)})
+        res.forEach(::println)
     }
 }
 
